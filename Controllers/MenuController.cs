@@ -1,41 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CarRentalConsole.Controllers
+﻿namespace CarRentalConsole.Controllers
 {
     internal class MenuController
     {
-        private string ValidateInput(string? input)
+        private bool TryParseSelection<TEnum>(string? input, out TEnum result) where TEnum : struct
         {
-            if (string.IsNullOrEmpty(input))
-            {
-                return string.Empty;
-            }
-            return input.Trim();
-        }
+            result = default;
 
-        private EMenuOption TransformMenuSelection(string input)
-        {
-            if (int.TryParse(input.Trim(), out int parsedInput))
+            if (!int.TryParse(input?.Trim(), out int parsedInput))
             {
-                return Enum.Parse<EMenuOption>(input);
+                return false;
             }
 
-            throw new InvalidOperationException("The current state does not allow this operation.");
+            result = (TEnum)Enum.ToObject(typeof(TEnum), parsedInput);
 
+            return true;
         }
 
-        public void HandleSelection(EMenuOption currentMenu, string? input)
+        private EMenuScreen HandleMainMenuSelection(string? input)
         {
-            EMenuOption currentSelection = TransformMenuSelection(input);
-
-            if (currentMenu == EMenuOption.Main)
+            if (!TryParseSelection(input, out EMainMenuOption option))
             {
-                Console.WriteLine($"selected {input} from {currentMenu}");
-            }          
+                return EMenuScreen.Main;
+            }
 
-
+            return option switch
+            {
+                EMainMenuOption.ViewAvailableCars => EMenuScreen.AvailableCars,
+                EMainMenuOption.RentCar => EMenuScreen.RentCar,
+                EMainMenuOption.ReturnCar => EMenuScreen.ReturnCar,
+                EMainMenuOption.Exit => EMenuScreen.Exit,
+                _ => EMenuScreen.Main
+            };
         }
+
+        public EMenuScreen HandleSelection(EMenuScreen currentScreen, string? input)
+        {
+            return currentScreen switch
+            {
+                EMenuScreen.Main => HandleMainMenuSelection(input),
+                _ => EMenuScreen.Main
+            };
+        }
+
     }
 }

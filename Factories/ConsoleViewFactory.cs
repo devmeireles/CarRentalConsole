@@ -1,23 +1,27 @@
 ﻿using CarRentalConsole.Interfaces;
 using CarRentalConsole.Views;
 
-namespace CarRentalConsole.Services
+namespace CarRentalConsole.Factories
 {
     internal class ConsoleViewFactory
     {
-        private IView GetView(EMenuOption menuOption)
+        private IView GetView(EMenuScreen menuOption)
         {
 
             switch (menuOption)
             {
-                case EMenuOption.Main:
+                case EMenuScreen.Main:
                     return new MainMenu();
+                case EMenuScreen.AvailableCars:
+                    return new AvailableCarsMenu();
+                case EMenuScreen.RentCar:
+                    return new RentCarMenu();
                 default:
                     return new NotFoundMenu();
             }
         }
 
-        public void DisplayView(EMenuOption menuOption)
+        public void DisplayView(EMenuScreen menuOption)
         {
             IView view = GetView(menuOption);
             view.Display();
