@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CarRentalConsole.Interfaces
+﻿namespace CarRentalConsole.Interfaces
 {
     internal interface IView
     {

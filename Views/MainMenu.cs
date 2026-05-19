@@ -1,5 +1,4 @@
 ﻿using CarRentalConsole.Interfaces;
-using System;
 using System.Text;
 
 namespace CarRentalConsole.Views
@@ -17,7 +16,11 @@ namespace CarRentalConsole.Views
         private string Build()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            string divider = new string('-', 30);
+
+            stringBuilder.AppendLine("Welcome to the Car Rental System!");
+            stringBuilder.AppendLine("Please select an option:");
+
+            string divider = new string('-', 40);
 
             stringBuilder.AppendLine(divider);
 

@@ -1,8 +1,5 @@
 ﻿using CarRentalConsole.Interfaces;
 using CarRentalConsole.Views;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CarRentalConsole.Services
 {

@@ -2,6 +2,5 @@
 {
     Main,
     RentCar,
-    ReturnCar,
-    Exit
+    ReturnCar
 }
