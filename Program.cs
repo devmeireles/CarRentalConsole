@@ -1,5 +1,6 @@
 ﻿using CarRentalConsole.Controllers;
 using CarRentalConsole.Factories;
+using CarRentalConsole.Services;
 
 namespace CarRentalConsole
 {
@@ -7,18 +8,17 @@ namespace CarRentalConsole
     {
         static void Main(string[] args)
         {
-            ConsoleViewFactory menuFactory = new ConsoleViewFactory();
-            MenuController menuController = new MenuController();
+            CarService carService = new CarService();
+            ConsoleViewFactory consoleViewFactory = new ConsoleViewFactory(carService);
+            MenuController menuController = new MenuController(carService);
 
             EMenuScreen currentScreen = EMenuScreen.Main;
 
             while (currentScreen != EMenuScreen.Exit)
             {
-                menuFactory.DisplayView(currentScreen);
+                consoleViewFactory.DisplayView(currentScreen);
 
                 string? menuSelection = Console.ReadLine();
-
-                Console.WriteLine(menuSelection);
 
                 currentScreen = menuController.HandleSelection(currentScreen, menuSelection);
 

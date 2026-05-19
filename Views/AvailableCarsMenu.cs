@@ -5,13 +5,13 @@ namespace CarRentalConsole.Views
 {
     internal class AvailableCarsMenu : IView
     {
-        private string[] availableCars = new string[]
+
+        private readonly ICarService carService;
+
+        public AvailableCarsMenu(ICarService carService)
         {
-            "1. Toyota Camry",
-            "2. Honda Accord",
-            "3. Ford Mustang",
-            "4. Tesla Model 3"
-        };
+            this.carService = carService;
+        }
 
         private string Build()
         {
@@ -20,6 +20,7 @@ namespace CarRentalConsole.Views
 
             stringBuilder.AppendLine("Available Cars for Rent:");
 
+            string[] availableCars = carService.GetAvailableCars();
 
             foreach (var car in availableCars)
             {
