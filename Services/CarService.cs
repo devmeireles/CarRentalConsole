@@ -1,25 +1,25 @@
-﻿using CarRentalConsole.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CarRentalConsole.Data;
+using CarRentalConsole.Interfaces;
+using CarRentalConsole.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalConsole.Services
 {
     internal class CarService : ICarService
     {
+        private readonly AppDbContext dbContext;
 
-        private string[] availableCars = new string[]
+        public CarService(AppDbContext dbContext)
         {
-            "Toyota Camry",
-            "Honda Accord",
-            "Ford Mustang",
-            "Chevrolet Malibu",
-            "Nissan Altima"
-        };
+            this.dbContext = dbContext;
+        }
 
-        public string[] GetAvailableCars()
+        public async Task<List<Car>> GetAvailableCars()
         {
-            return availableCars;
+            return await dbContext.Cars
+                .Where(car => car.IsAvailable)
+                .OrderBy(car => car.Id)
+                .ToListAsync();
         }
     }
 }

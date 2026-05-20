@@ -41,12 +41,12 @@ namespace CarRentalConsole.Controllers
             };
         }
 
-        public EMenuScreen HandleSelection(EMenuScreen currentScreen, string? input)
+        public async Task<EMenuScreen> HandleSelection(EMenuScreen currentScreen, string? input)
         {
             return currentScreen switch
             {
                 EMenuScreen.Main => HandleMainMenuSelection(input),
-                EMenuScreen.RentCar => carRentalController.RentCar(input),
+                EMenuScreen.RentCar => await carRentalController.RentCar(input),
                 _ => EMenuScreen.Main
             };
         }

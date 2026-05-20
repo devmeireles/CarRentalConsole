@@ -13,7 +13,7 @@ namespace CarRentalConsole.Views
             "4. Exit"
         };
 
-        private string Build()
+        private async Task<string> Build()
         {
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -36,9 +36,9 @@ namespace CarRentalConsole.Views
             return stringBuilder.ToString();
         }
 
-        public void Display()
+        public async Task Display()
         {
-            string menu = Build();
+            string menu = await Build();
             Console.WriteLine(menu);
         }
     }

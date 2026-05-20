@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CarRentalConsole.Models;
 
 namespace CarRentalConsole.Interfaces
 {
     internal interface ICarService
     {
-        string[] GetAvailableCars();
+        Task<List<Car>> GetAvailableCars();
     }
 }

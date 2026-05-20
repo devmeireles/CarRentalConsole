@@ -1,4 +1,5 @@
 ﻿using CarRentalConsole.Controllers;
+using CarRentalConsole.Data;
 using CarRentalConsole.Helpers;
 using CarRentalConsole.Services;
 
@@ -6,9 +7,15 @@ namespace CarRentalConsole
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            CarService carService = new CarService();
+            AppDbContext dbContext = new AppDbContext();
+            DatabaseInitializer databaseInitializer = new DatabaseInitializer(dbContext);
+            databaseInitializer.initialize();
+
+
+
+            CarService carService = new CarService(dbContext);
             ConsoleInputReader inputReader = new ConsoleInputReader();
 
             CarRentalController carRentalController = new CarRentalController(carService, inputReader);
@@ -24,7 +31,7 @@ namespace CarRentalConsole
 
                 string? menuSelection = Console.ReadLine();
 
-                currentScreen = menuController.HandleSelection(currentScreen, menuSelection);
+                currentScreen = await menuController.HandleSelection(currentScreen, menuSelection);
 
             }
 

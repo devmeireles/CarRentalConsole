@@ -1,4 +1,5 @@
 ﻿using CarRentalConsole.Interfaces;
+using CarRentalConsole.Models;
 using System.Text;
 
 namespace CarRentalConsole.Views
@@ -12,9 +13,9 @@ namespace CarRentalConsole.Views
             this.carService = carService;
         }
 
-        public string Build()
+        public async Task<string> Build()
         {
-            string[] availableCars = carService.GetAvailableCars();
+            List<Car> availableCars = await carService.GetAvailableCars();
 
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -22,9 +23,9 @@ namespace CarRentalConsole.Views
 
             stringBuilder.AppendLine("Renting a Car, please select your desired option:");
 
-            for (int i = 0; i < availableCars.Length; i++)
+            for (int i = 0; i < availableCars.Count; i++)
             {
-                stringBuilder.AppendLine($"{i + 1} - {availableCars[i]}");
+                stringBuilder.AppendLine($"{availableCars[i].Id} - {availableCars[i].Name} ({availableCars[i].DailyRate} / day)");
             }
 
             stringBuilder.AppendLine(divider);
@@ -32,9 +33,9 @@ namespace CarRentalConsole.Views
             return stringBuilder.ToString();
         }
 
-        public void Display()
+        public async Task Display()
         {
-            string menu = Build();
+            string menu = await Build();
             Console.WriteLine(menu);
         }
     }

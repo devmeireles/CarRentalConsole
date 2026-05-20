@@ -1,4 +1,5 @@
 ﻿using CarRentalConsole.Interfaces;
+using CarRentalConsole.Models;
 using System.Text;
 
 namespace CarRentalConsole.Views
@@ -13,18 +14,18 @@ namespace CarRentalConsole.Views
             this.carService = carService;
         }
 
-        private string Build()
+        private async Task<string> Build()
         {
             StringBuilder stringBuilder = new StringBuilder();
             string divider = new string('-', 40);
 
             stringBuilder.AppendLine("Available Cars for Rent:");
 
-            string[] availableCars = carService.GetAvailableCars();
+            List<Car> availableCars = await carService.GetAvailableCars();
 
             foreach (var car in availableCars)
             {
-                stringBuilder.AppendLine(car);
+                stringBuilder.AppendLine(car.Name);
             }
 
             stringBuilder.AppendLine(divider);
@@ -32,9 +33,9 @@ namespace CarRentalConsole.Views
             return stringBuilder.ToString();
         }
 
-        public void Display()
+        public async Task Display()
         {
-            string menu = Build();
+            string menu = await Build();
             Console.WriteLine(menu);
         }
     }
