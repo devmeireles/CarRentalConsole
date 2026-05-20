@@ -1,7 +1,7 @@
 ﻿using CarRentalConsole.Interfaces;
 using CarRentalConsole.Views;
 
-namespace CarRentalConsole.Factories
+namespace CarRentalConsole.Helpers
 {
     internal class ConsoleViewFactory
     {
