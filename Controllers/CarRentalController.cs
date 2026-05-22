@@ -7,12 +7,16 @@ namespace CarRentalConsole.Controllers
     internal class CarRentalController
     {
         private readonly ICarService carService;
+        private readonly IRentalService rentalService;
+        private readonly ICustomerService customerService;
         private readonly ConsoleInputReader inputReader;
 
-        public CarRentalController(ICarService carService, ConsoleInputReader inputReader)
+        public CarRentalController(ICarService carService, IRentalService rentalService, ICustomerService customerService, ConsoleInputReader inputReader)
         {
             this.carService = carService;
             this.inputReader = inputReader;
+            this.rentalService = rentalService;
+            this.customerService = customerService;
         }
 
         public async Task<EMenuScreen> RentCar(string? input)
@@ -43,13 +47,53 @@ namespace CarRentalConsole.Controllers
                 return EMenuScreen.RentCar;
             }
 
+            string email = inputReader.ReadEmail("Enter your email: ");
+
+            Customer? customer = await customerService.GetCustomerByEmail(email);
+
+            if (customer == null)
+            {
+                Console.WriteLine(new string('-', 40));
+                Console.WriteLine("No customer found with that email. Creating new one.");
+                customer = await customerService.CreateCustomer(email);
+
+                Console.WriteLine(new string('-', 40));
+            }
+
             int rentalDays = endDate.DayNumber - startDate.DayNumber;
+            double totalCost = rentalDays * (double)selectedCar.DailyRate;
 
-            Console.WriteLine($"You selected {selectedCar.Name}");
-            Console.WriteLine($"Rental days: {rentalDays}");
+            Rental newRent = new Rental
+            {
+                CarId = selectedCar.Id,
+                CustomerId = customer.Id,
+                StartDate = startDate,
+                EndDate = endDate,
+                Duration = rentalDays,
+                TotalCost = totalCost,
+            };
 
-            return EMenuScreen.Main;
+            int rentalId = await rentalService.CreateRental(newRent);
+
+            if (rentalId > 0)
+            {
+
+                Console.WriteLine(new string('-', 40));
+
+                Console.WriteLine($"Car selection {selectedCar.Name}");
+                Console.WriteLine($"Rental days: {rentalDays}");
+                Console.WriteLine($"Total cost: {totalCost:C}");
+                Console.WriteLine($"Rental ID: {rentalId}");
+
+                Console.WriteLine(new string('-', 40));
+
+                return EMenuScreen.Main;
+            }
+            else
+            {
+                Console.WriteLine("Failed to create rental. Please try again.");
+                return EMenuScreen.RentCar;
+            }
         }
-
     }
 }

@@ -1,0 +1,39 @@
+﻿using CarRentalConsole.Data;
+using CarRentalConsole.Interfaces;
+using CarRentalConsole.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace CarRentalConsole.Services
+{
+    internal class CustomerService : ICustomerService
+    {
+        private readonly AppDbContext dbContext;
+
+        public CustomerService(AppDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
+        public async Task<Customer> CreateCustomer(string email)
+        {
+            Customer customer = new Customer
+            {
+                Email = email
+            };
+
+            await dbContext.Customers.AddAsync(customer);
+
+            await dbContext.SaveChangesAsync();
+
+            return customer;
+        }
+
+        public async Task<Customer?> GetCustomerByEmail(string email)
+        {
+            Customer? customer = await dbContext.Customers
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            return customer;
+        }
+    }
+}

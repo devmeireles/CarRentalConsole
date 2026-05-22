@@ -6,6 +6,8 @@ namespace CarRentalConsole.Data
     internal class AppDbContext : DbContext
     {
         public DbSet<Car> Cars => Set<Car>();
+        public DbSet<Rental> Rentals => Set<Rental>();
+        public DbSet<Customer> Customers => Set<Customer>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

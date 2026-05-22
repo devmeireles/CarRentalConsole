@@ -11,5 +11,16 @@ namespace CarRentalConsole.Models
         public decimal DailyRate { get; set; }
         public bool IsAvailable { get; set; } = true;
 
+        public List<Rental> Rentals { get; set; } = new List<Rental>();
+
+        public void MakeAvailable()
+        {
+            IsAvailable = true;
+        }
+
+        public void MakeUnavailable()
+        {
+            IsAvailable = false;
+        }
     }
 }

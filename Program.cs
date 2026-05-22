@@ -13,12 +13,12 @@ namespace CarRentalConsole
             DatabaseInitializer databaseInitializer = new DatabaseInitializer(dbContext);
             databaseInitializer.initialize();
 
-
-
+            CustomerService customerService = new CustomerService(dbContext);
+            RentalService rentService = new RentalService(dbContext);
             CarService carService = new CarService(dbContext);
             ConsoleInputReader inputReader = new ConsoleInputReader();
 
-            CarRentalController carRentalController = new CarRentalController(carService, inputReader);
+            CarRentalController carRentalController = new CarRentalController(carService, rentService, customerService, inputReader);
 
             ConsoleViewFactory consoleViewFactory = new ConsoleViewFactory(carService);
             MenuController menuController = new MenuController(carRentalController);
