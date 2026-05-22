@@ -10,23 +10,22 @@ namespace CarRentalConsole.Controllers
             this.carRentalController = carRentalController;
         }
 
-        private bool TryParseSelection<TEnum>(string? input, out TEnum result) where TEnum : struct
+        private TEnum ParseSelection<TEnum>(int input, out TEnum result) where TEnum : struct
         {
-            result = default;
 
-            if (!int.TryParse(input?.Trim(), out int parsedInput))
-            {
-                return false;
-            }
+            result = (TEnum)Enum.ToObject(typeof(TEnum), input);
 
-            result = (TEnum)Enum.ToObject(typeof(TEnum), parsedInput);
-
-            return true;
+            return result;
         }
 
         private EMenuScreen HandleMainMenuSelection(string? input)
         {
-            if (!TryParseSelection(input, out EMainMenuOption option))
+            if (!int.TryParse(input, out int parsedInput))
+            {
+                return EMenuScreen.Main;
+            }
+
+            if (ParseSelection(parsedInput, out EMainMenuOption option) == default)
             {
                 return EMenuScreen.Main;
             }
