@@ -3,9 +3,9 @@ namespace CarRentalConsole.Controllers
 {
     internal class MenuController
     {
-        private readonly CarRentalController carRentalController;
+        private readonly CarController carRentalController;
 
-        public MenuController(CarRentalController carRentalController)
+        public MenuController(CarController carRentalController)
         {
             this.carRentalController = carRentalController;
         }
@@ -46,6 +46,7 @@ namespace CarRentalConsole.Controllers
             {
                 EMenuScreen.Main => HandleMainMenuSelection(input),
                 EMenuScreen.RentCar => await carRentalController.RentCar(input),
+                EMenuScreen.ReturnCar => await carRentalController.ReturnCar(input),
                 _ => EMenuScreen.Main
             };
         }

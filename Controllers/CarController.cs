@@ -4,14 +4,14 @@ using CarRentalConsole.Models;
 
 namespace CarRentalConsole.Controllers
 {
-    internal class CarRentalController
+    internal class CarController
     {
         private readonly ICarService carService;
         private readonly IRentalService rentalService;
         private readonly ICustomerService customerService;
         private readonly ConsoleInputReader inputReader;
 
-        public CarRentalController(ICarService carService, IRentalService rentalService, ICustomerService customerService, ConsoleInputReader inputReader)
+        public CarController(ICarService carService, IRentalService rentalService, ICustomerService customerService, ConsoleInputReader inputReader)
         {
             this.carService = carService;
             this.inputReader = inputReader;
@@ -93,6 +93,39 @@ namespace CarRentalConsole.Controllers
             {
                 Console.WriteLine("Failed to create rental. Please try again.");
                 return EMenuScreen.RentCar;
+            }
+        }
+
+        public async Task<EMenuScreen> ReturnCar(string? input)
+        {
+            if (!int.TryParse(input?.Trim(), out int rentalId))
+            {
+                return EMenuScreen.ReturnCar;
+            }
+
+            Rental? rental = await rentalService.GetRentalById(rentalId);
+            if (rental == null)
+            {
+                Console.WriteLine("No rental found with that ID.");
+                return EMenuScreen.ReturnCar;
+            }
+
+            if (rental.IsReturned)
+            {
+                Console.WriteLine("This car has already been returned.");
+                return EMenuScreen.ReturnCar;
+            }
+
+            int success = await rentalService.ConcludeRental(rentalId);
+            if (success < 1)
+            {
+                Console.WriteLine("Failed to return car. Please try again.");
+                return EMenuScreen.ReturnCar;
+            }
+            else
+            {
+                Console.WriteLine("Car returned successfully.");
+                return EMenuScreen.Main;
             }
         }
     }

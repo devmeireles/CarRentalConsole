@@ -6,10 +6,12 @@ namespace CarRentalConsole.Helpers
     internal class ConsoleViewFactory
     {
         private readonly ICarService carService;
+        private readonly IRentalService rentalService;
 
-        public ConsoleViewFactory(ICarService carService)
+        public ConsoleViewFactory(ICarService carService, IRentalService rentalService)
         {
             this.carService = carService;
+            this.rentalService = rentalService;
         }
 
         private IView GetView(EMenuScreen menuOption)
@@ -23,6 +25,8 @@ namespace CarRentalConsole.Helpers
                     return new AvailableCarsMenu(carService);
                 case EMenuScreen.RentCar:
                     return new RentCarMenu(carService);
+                case EMenuScreen.ReturnCar:
+                    return new ReturnCarMenu(rentalService);
                 default:
                     return new NotFoundMenu();
             }

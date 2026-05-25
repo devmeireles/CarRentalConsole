@@ -14,14 +14,14 @@ namespace CarRentalConsole
             databaseInitializer.initialize();
 
             CustomerService customerService = new CustomerService(dbContext);
-            RentalService rentService = new RentalService(dbContext);
+            RentalService rentalService = new RentalService(dbContext);
             CarService carService = new CarService(dbContext);
             ConsoleInputReader inputReader = new ConsoleInputReader();
 
-            CarRentalController carRentalController = new CarRentalController(carService, rentService, customerService, inputReader);
+            CarController carController = new CarController(carService, rentalService, customerService, inputReader);
 
-            ConsoleViewFactory consoleViewFactory = new ConsoleViewFactory(carService);
-            MenuController menuController = new MenuController(carRentalController);
+            ConsoleViewFactory consoleViewFactory = new ConsoleViewFactory(carService, rentalService);
+            MenuController menuController = new MenuController(carController);
 
             EMenuScreen currentScreen = EMenuScreen.Main;
 

@@ -19,8 +19,11 @@ namespace CarRentalConsole.Models
         [Required]
         public DateOnly EndDate { get; set; }
 
+        public DateOnly? ReturnDate { get; set; }
+
         [Required]
         public double TotalCost { get; set; }
 
+        public bool IsReturned => ReturnDate != null;
     }
 }
