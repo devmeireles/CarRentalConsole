@@ -32,8 +32,10 @@ namespace CarRentalConsole.Services
 
         public async Task<Customer?> GetCustomerByEmail(string email)
         {
+            string parsedEmail = email.Trim().ToLowerInvariant();
+
             Customer? customer = await dbContext.Customers
-                .FirstOrDefaultAsync(u => u.Email == email);
+                .FirstOrDefaultAsync(u => u.Email == parsedEmail);
 
             return customer;
         }

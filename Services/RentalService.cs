@@ -17,6 +17,7 @@ namespace CarRentalConsole.Services
         public async Task<List<Rental>> GetOpenRentals()
         {
             return await dbContext.Rentals
+                .AsNoTracking()
                 .Include(rental => rental.Car)
                 .Include(rental => rental.Customer)
                 .Where(r => r.ReturnDate == null)
@@ -52,6 +53,7 @@ namespace CarRentalConsole.Services
         public async Task<List<Car>> GetRentedCars()
         {
             return await dbContext.Cars
+                .AsNoTracking()
                 .Where(car => !car.IsAvailable)
                 .OrderBy(car => car.Id)
                 .ToListAsync();
@@ -79,6 +81,12 @@ namespace CarRentalConsole.Services
             await dbContext.SaveChangesAsync();
 
             return ERentalReturnResult.Success;
+        }
+
+        public async Task<bool> HasOpenRentals()
+        {
+            return await dbContext.Rentals
+                .AnyAsync(rental => rental.ReturnDate == null);
         }
     }
 }

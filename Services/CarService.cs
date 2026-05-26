@@ -17,6 +17,7 @@ namespace CarRentalConsole.Services
         public async Task<List<Car>> GetAvailableCars()
         {
             return await dbContext.Cars
+                .AsNoTracking()
                 .Where(car => car.IsAvailable)
                 .OrderBy(car => car.Id)
                 .ToListAsync();

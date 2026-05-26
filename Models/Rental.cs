@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CarRentalConsole.Models
+﻿namespace CarRentalConsole.Models
 {
     internal class Rental
     {
@@ -12,16 +10,12 @@ namespace CarRentalConsole.Models
         public int CarId { get; set; }
         public Car? Car { get; set; }
 
-        [Required]
         public int Duration { get; set; } = 0;
-        [Required]
         public DateOnly StartDate { get; set; }
-        [Required]
         public DateOnly EndDate { get; set; }
 
         public DateOnly? ReturnDate { get; set; }
 
-        [Required]
         public decimal TotalCost { get; set; }
 
         public bool IsReturned => ReturnDate != null;

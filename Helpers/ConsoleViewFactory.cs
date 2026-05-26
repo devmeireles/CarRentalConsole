@@ -36,7 +36,7 @@ namespace CarRentalConsole.Helpers
             }
         }
 
-        public async void DisplayView(EMenuScreen menuOption)
+        public async Task DisplayView(EMenuScreen menuOption)
         {
             IView view = await GetView(menuOption);
             view.Display();

@@ -8,6 +8,7 @@ namespace CarRentalConsole.Interfaces
         Task<Rental?> GetRentalById(int rentalId);
         Task<List<Rental>> GetOpenRentals();
         Task<ERentalReturnResult> ConcludeRental(int rentalId);
+        Task<bool> HasOpenRentals();
 
     }
 }

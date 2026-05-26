@@ -1,6 +1,7 @@
 ﻿using CarRentalConsole.Controllers;
 using CarRentalConsole.Data;
 using CarRentalConsole.Helpers;
+using CarRentalConsole.Interfaces;
 using CarRentalConsole.Services;
 
 namespace CarRentalConsole
@@ -16,16 +17,16 @@ namespace CarRentalConsole
             CarService carService = new CarService(dbContext);
             ConsoleInputReader inputReader = new ConsoleInputReader();
 
-            RentalController carController = new RentalController(carService, rentalService, customerService, inputReader);
+            RentalController carRentalController = new RentalController(carService, rentalService, customerService, inputReader);
 
             ConsoleViewFactory consoleViewFactory = new ConsoleViewFactory(carService, rentalService);
-            MenuController menuController = new MenuController(carController);
+            MenuController menuController = new MenuController(carRentalController, rentalService);
 
             EMenuScreen currentScreen = EMenuScreen.Main;
 
             while (currentScreen != EMenuScreen.Exit)
             {
-                consoleViewFactory.DisplayView(currentScreen);
+                await consoleViewFactory.DisplayView(currentScreen);
 
                 string? menuSelection = Console.ReadLine();
 

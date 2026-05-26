@@ -1,13 +1,17 @@
 ﻿
+using CarRentalConsole.Interfaces;
+
 namespace CarRentalConsole.Controllers
 {
     internal class MenuController
     {
         private readonly RentalController carRentalController;
+        private readonly IRentalService rentalService;
 
-        public MenuController(RentalController carRentalController)
+        public MenuController(RentalController carRentalController, IRentalService rentalService)
         {
             this.carRentalController = carRentalController;
+            this.rentalService = rentalService;
         }
 
         private TEnum ParseSelection<TEnum>(int input, out TEnum result) where TEnum : struct
@@ -18,7 +22,7 @@ namespace CarRentalConsole.Controllers
             return result;
         }
 
-        private EMenuScreen HandleMainMenuSelection(string? input)
+        private async Task<EMenuScreen> HandleMainMenuSelection(string? input)
         {
             if (!int.TryParse(input, out int parsedInput))
             {
@@ -30,11 +34,23 @@ namespace CarRentalConsole.Controllers
                 return EMenuScreen.Main;
             }
 
+            if (option == EMainMenuOption.ReturnCar)
+            {
+                bool hasOpenRentals = await rentalService.HasOpenRentals();
+
+                if (!hasOpenRentals)
+                {
+                    Console.WriteLine("No cars are currently rented.");
+                    return EMenuScreen.Main;
+                }
+
+                return EMenuScreen.ReturnCar;
+            }
+
             return option switch
             {
                 EMainMenuOption.ViewAvailableCars => EMenuScreen.AvailableCars,
                 EMainMenuOption.RentCar => EMenuScreen.RentCar,
-                EMainMenuOption.ReturnCar => EMenuScreen.ReturnCar,
                 EMainMenuOption.Exit => EMenuScreen.Exit,
                 _ => EMenuScreen.Main
             };
@@ -44,7 +60,7 @@ namespace CarRentalConsole.Controllers
         {
             return currentScreen switch
             {
-                EMenuScreen.Main => HandleMainMenuSelection(input),
+                EMenuScreen.Main => await HandleMainMenuSelection(input),
                 EMenuScreen.RentCar => await carRentalController.RentCar(input),
                 EMenuScreen.ReturnCar => await carRentalController.ReturnCar(input),
                 _ => EMenuScreen.Main
