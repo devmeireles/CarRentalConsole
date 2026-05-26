@@ -2,7 +2,7 @@
 
 namespace CarRentalConsole.Views
 {
-    internal class NotFoundMenu : IView
+    public class NotFoundMenu : IView
     {
         public void Display()
         {

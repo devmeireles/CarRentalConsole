@@ -1,6 +1,6 @@
 ﻿namespace CarRentalConsole.Models
 {
-    internal class Rental
+    public class Rental
     {
         public int Id { get; set; }
 

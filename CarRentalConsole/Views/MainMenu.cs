@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CarRentalConsole.Views
 {
-    internal class MainMenu : IView
+    public class MainMenu : IView
     {
         private string[] options = new string[]
         {

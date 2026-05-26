@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CarRentalConsole.Views
 {
-    internal class RentCarMenu : IView
+    public class RentCarMenu : IView
     {
         private readonly List<Car> availableCars;
 

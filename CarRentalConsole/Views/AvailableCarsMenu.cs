@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CarRentalConsole.Views
 {
-    internal class AvailableCarsMenu : IView
+    public class AvailableCarsMenu : IView
     {
 
         private readonly List<Car> availableCars;
@@ -18,6 +18,13 @@ namespace CarRentalConsole.Views
         {
             StringBuilder stringBuilder = new StringBuilder();
             string divider = new string('-', 40);
+
+            if (availableCars.Count == 0)
+            {
+                stringBuilder.AppendLine("No cars are currently available for rent.");
+                stringBuilder.AppendLine(divider);
+                return stringBuilder.ToString();
+            }
 
             stringBuilder.AppendLine("Available Cars for Rent:");
 

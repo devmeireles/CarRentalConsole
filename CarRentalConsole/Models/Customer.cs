@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace CarRentalConsole.Models
-{
-    internal class Customer
+{    public class Customer
     {
         public int Id { get; set; }
         [Required]

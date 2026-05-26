@@ -1,8 +1,8 @@
 # CarRentalConsole
 
-A small C# console application for learning basic application structure, Entity Framework Core, SQLite persistence, services, interfaces, and simple menu-driven workflows.
+A C# console application for managing a simple car rental workflow with Entity Framework Core, SQLite, and MSTest.
 
-This repository is for learning purposes. The code is intentionally simple and is still evolving.
+The application uses a menu-driven console interface where users can view available cars, rent a car, and return a rented car.
 
 ## Tech Stack
 
@@ -10,55 +10,107 @@ This repository is for learning purposes. The code is intentionally simple and i
 - .NET 10
 - Entity Framework Core
 - SQLite
-- Console application architecture
+- MSTest
 
-## Project Structure
+## Solution Structure
 
 ```text
-Controllers/   Console flow and menu handling
-Data/          EF Core DbContext and database initialization
-Enums/         Menu option and screen enums
-Helpers/       Console input and view factory helpers
-Interfaces/    Service and view contracts
-Models/        Car, Customer, and Rental entities
-Services/      Business/data access operations
-Views/         Console menu rendering
+CarRentalConsole/
+  CarRentalConsole.slnx
+  README.md
+  .gitignore
+
+  CarRentalConsole/
+    CarRentalConsole.csproj
+    Program.cs
+    Controllers/
+    Data/
+    Enums/
+    Helpers/
+    Interfaces/
+    Migrations/
+    Models/
+    Services/
+    Views/
+
+  CarRentalConsole.Tests/
+    CarRentalConsole.Tests.csproj
 ```
 
-## Setup
+## Projects
 
-Make sure the .NET SDK is installed, then restore and run the project:
+### CarRentalConsole
 
-```bash
+The main console application.
+
+Main responsibilities:
+
+- render console menus
+- read user input
+- manage rental workflows
+- persist cars, customers, and rentals with EF Core
+- use SQLite as the local database
+
+### CarRentalConsole.Tests
+
+The MSTest project for automated tests.
+
+The test project references the main application project:
+
+```xml
+<ProjectReference Include="..\CarRentalConsole\CarRentalConsole.csproj" />
+```
+
+## Getting Started
+
+Run these commands from the solution root:
+
+```powershell
 dotnet restore
-dotnet run
+dotnet build
 ```
 
-The app uses SQLite with this connection string:
+Run the application:
+
+```powershell
+dotnet run --project CarRentalConsole\CarRentalConsole.csproj
+```
+
+Run the tests:
+
+```powershell
+dotnet test
+```
+
+## Database
+
+The application uses SQLite through Entity Framework Core.
+
+Current connection string:
 
 ```text
 Data Source=car-rental.db
 ```
 
-The database is created automatically when the app starts by using `EnsureCreated()`.
+The database schema is managed with EF Core migrations.
 
-## Database Notes
+Apply migrations:
 
-This project does not currently use migrations.
+```powershell
+dotnet ef database update --project CarRentalConsole\CarRentalConsole.csproj
+```
 
-Because of that, if you change the models and the database already exists, SQLite will not automatically update the existing schema. During development, the simplest option is to delete `car-rental.db` and run the app again.
+Create a new migration after changing the EF model:
 
-The app currently defines these tables through EF Core models:
-
-- `Cars`
-- `Customers`
-- `Rentals`
+```powershell
+dotnet ef migrations add MigrationName --project CarRentalConsole\CarRentalConsole.csproj
+```
 
 The initial car list is seeded in `AppDbContext`.
 
 ## Current Functionality
 
-When the app starts, it displays a main menu:
+When the app starts, it displays:
 
 ```text
 1. View Available Cars
@@ -69,7 +121,7 @@ When the app starts, it displays a main menu:
 
 ### View Available Cars
 
-Shows cars where `IsAvailable` is `true`.
+Displays cars where `IsAvailable` is `true`.
 
 ### Rent a Car
 
@@ -80,25 +132,23 @@ The rental flow asks the user to:
 3. Enter an end date.
 4. Enter an email address.
 
-If the email does not already belong to a customer, the app creates a new customer.
+If the email does not belong to an existing customer, the app creates a new customer.
 
-After that, it creates a rental connected to:
-
-- the selected car
-- the customer
-- the start and end dates
-- the rental duration
-- the total cost
-
-Once a rental is created, the selected car is marked as unavailable.
+When a rental is created, the selected car is marked as unavailable.
 
 ### Return a Car
 
-The menu option exists, but the return flow is not implemented yet.
+The return flow lists open rentals and allows the user to conclude a rental. When a rental is returned, the return date is saved and the car is marked as available again.
 
-## Entity Relationships
+## Domain Model
 
-The main relationship is:
+The core entities are:
+
+- `Car`
+- `Customer`
+- `Rental`
+
+Relationships:
 
 ```text
 Customer 1 -> many Rentals
@@ -107,8 +157,16 @@ Rental   1 -> one Customer
 Rental   1 -> one Car
 ```
 
-`Rental` stores the foreign keys:
+`Rental` stores:
 
 - `CustomerId`
 - `CarId`
+- `StartDate`
+- `EndDate`
+- `ReturnDate`
+- `Duration`
+- `TotalCost`
 
+## Local Files
+
+Generated files such as `bin/`, `obj/`, `TestResults/`, and local SQLite database files should stay out of source control.
