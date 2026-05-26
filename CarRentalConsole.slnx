@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="CarRentalConsole.csproj" />
   <Project Path="CarRentalConsole.Tests/CarRentalConsole.Tests.csproj" Id="ed3e474e-4e19-4a01-9176-a99ba16b955e" />
+  <Project Path="CarRentalConsole/CarRentalConsole.csproj" />
 </Solution>
