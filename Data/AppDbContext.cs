@@ -14,7 +14,7 @@ namespace CarRentalConsole.Data
             optionsBuilder.UseSqlite("Data Source=car-rental.db");
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        private void SeedData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Car>().HasData(
                 new Car { Id = 1, Name = "Toyota Camry", DailyRate = 120, IsAvailable = true },
@@ -28,6 +28,30 @@ namespace CarRentalConsole.Data
                 new Car { Id = 9, Name = "BMW 320i", DailyRate = 220, IsAvailable = true },
                 new Car { Id = 10, Name = "Mercedes-Benz C300", DailyRate = 250, IsAvailable = true }
             );
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Customer>()
+                .HasIndex(customer => customer.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Rental>()
+                .HasOne(rental => rental.Customer)
+                .WithMany(customer => customer.Rentals)
+                .HasForeignKey(rental => rental.CustomerId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Rental>()
+                .HasOne(rental => rental.Car)
+                .WithMany(car => car.Rentals)
+                .HasForeignKey(rental => rental.CarId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            this.SeedData(modelBuilder);
         }
     }
 }
