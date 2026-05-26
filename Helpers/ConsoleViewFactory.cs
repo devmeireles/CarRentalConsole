@@ -1,4 +1,5 @@
 ﻿using CarRentalConsole.Interfaces;
+using CarRentalConsole.Models;
 using CarRentalConsole.Views;
 
 namespace CarRentalConsole.Helpers
@@ -14,7 +15,7 @@ namespace CarRentalConsole.Helpers
             this.rentalService = rentalService;
         }
 
-        private IView GetView(EMenuScreen menuOption)
+        private async Task<IView> GetView(EMenuScreen menuOption)
         {
 
             switch (menuOption)
@@ -22,19 +23,22 @@ namespace CarRentalConsole.Helpers
                 case EMenuScreen.Main:
                     return new MainMenu();
                 case EMenuScreen.AvailableCars:
-                    return new AvailableCarsMenu(carService);
+                    List<Car> availableCars = await carService.GetAvailableCars();
+                    return new AvailableCarsMenu(availableCars);
                 case EMenuScreen.RentCar:
-                    return new RentCarMenu(carService);
+                    List<Car> rentableCars = await carService.GetAvailableCars();
+                    return new RentCarMenu(rentableCars);
                 case EMenuScreen.ReturnCar:
-                    return new ReturnCarMenu(rentalService);
+                    List<Rental> openRentals = await rentalService.GetOpenRentals();
+                    return new ReturnCarMenu(openRentals);
                 default:
                     return new NotFoundMenu();
             }
         }
 
-        public void DisplayView(EMenuScreen menuOption)
+        public async void DisplayView(EMenuScreen menuOption)
         {
-            IView view = GetView(menuOption);
+            IView view = await GetView(menuOption);
             view.Display();
         }
     }

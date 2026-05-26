@@ -6,26 +6,30 @@ namespace CarRentalConsole.Views
 {
     internal class RentCarMenu : IView
     {
-        private readonly ICarService carService;
+        private readonly List<Car> availableCars;
 
-        public RentCarMenu(ICarService carService)
+        public RentCarMenu(List<Car> availableCars)
         {
-            this.carService = carService;
+            this.availableCars = availableCars;
         }
 
-        public async Task<string> Build()
+        public string Build()
         {
-            List<Car> availableCars = await carService.GetAvailableCars();
-
             StringBuilder stringBuilder = new StringBuilder();
-
             string divider = new string('-', 40);
 
-            stringBuilder.AppendLine("Renting a Car, please select your desired option:");
-
-            for (int i = 0; i < availableCars.Count; i++)
+            if (availableCars.Count == 0)
             {
-                stringBuilder.AppendLine($"{availableCars[i].Id} - {availableCars[i].Name} ({availableCars[i].DailyRate} / day)");
+                stringBuilder.AppendLine("Sorry, there are no cars available for rent at the moment.");
+            }
+            else
+            {
+                stringBuilder.AppendLine("Renting a Car, please select your desired option:");
+
+                for (int i = 0; i < availableCars.Count; i++)
+                {
+                    stringBuilder.AppendLine($"{availableCars[i].Id} - {availableCars[i].Name} ({availableCars[i].DailyRate} / day)");
+                }
             }
 
             stringBuilder.AppendLine(divider);
@@ -33,9 +37,9 @@ namespace CarRentalConsole.Views
             return stringBuilder.ToString();
         }
 
-        public async Task Display()
+        public void Display()
         {
-            string menu = await Build();
+            string menu = Build();
             Console.WriteLine(menu);
         }
     }

@@ -1,8 +1,12 @@
-﻿enum EMenuScreen
+﻿
+namespace CarRentalConsole.Interfaces
 {
-    Main,
-    AvailableCars,
-    RentCar,
-    ReturnCar,
-    Exit
+    enum EMenuScreen
+    {
+        Main,
+        AvailableCars,
+        RentCar,
+        ReturnCar,
+        Exit
+    }
 }

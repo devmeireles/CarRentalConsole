@@ -7,21 +7,19 @@ namespace CarRentalConsole.Views
     internal class AvailableCarsMenu : IView
     {
 
-        private readonly ICarService carService;
+        private readonly List<Car> availableCars;
 
-        public AvailableCarsMenu(ICarService carService)
+        public AvailableCarsMenu(List<Car> availableCars)
         {
-            this.carService = carService;
+            this.availableCars = availableCars;
         }
 
-        private async Task<string> Build()
+        private string Build()
         {
             StringBuilder stringBuilder = new StringBuilder();
             string divider = new string('-', 40);
 
             stringBuilder.AppendLine("Available Cars for Rent:");
-
-            List<Car> availableCars = await carService.GetAvailableCars();
 
             foreach (var car in availableCars)
             {
@@ -33,9 +31,9 @@ namespace CarRentalConsole.Views
             return stringBuilder.ToString();
         }
 
-        public async Task Display()
+        public void Display()
         {
-            string menu = await Build();
+            string menu = Build();
             Console.WriteLine(menu);
         }
     }

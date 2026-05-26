@@ -2,6 +2,6 @@
 {
     internal interface IView
     {
-        Task Display();
+        void Display();
     }
 }

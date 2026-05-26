@@ -21,5 +21,19 @@ namespace CarRentalConsole.Services
                 .OrderBy(car => car.Id)
                 .ToListAsync();
         }
+
+        public async Task<Car?> GetCarById(int carId)
+        {
+            return await dbContext.Cars
+                .FirstOrDefaultAsync(car => car.Id == carId);
+        }
+
+        public Task<bool> IsCarAvailable(int carId)
+        {
+            return dbContext.Cars
+                .Where(car => car.Id == carId)
+                .Select(car => car.IsAvailable)
+                .FirstOrDefaultAsync();
+        }
     }
 }

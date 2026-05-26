@@ -17,6 +17,8 @@ namespace CarRentalConsole.Services
         public async Task<List<Rental>> GetOpenRentals()
         {
             return await dbContext.Rentals
+                .Include(rental => rental.Car)
+                .Include(rental => rental.Customer)
                 .Where(r => r.ReturnDate == null)
                 .ToListAsync();
         }
@@ -41,7 +43,10 @@ namespace CarRentalConsole.Services
 
         public async Task<Rental?> GetRentalById(int rentalId)
         {
-            return await dbContext.Rentals.FindAsync(rentalId);
+            return await dbContext.Rentals
+                .Include(rental => rental.Car)
+                .Include(rental => rental.Customer)
+                .FirstOrDefaultAsync(rental => rental.Id == rentalId);
         }
 
         public async Task<List<Car>> GetRentedCars()
@@ -52,7 +57,7 @@ namespace CarRentalConsole.Services
                 .ToListAsync();
         }
 
-        public async Task<int> ConcludeRental(int rentalId)
+        public async Task<ERentalReturnResult> ConcludeRental(int rentalId)
         {
             Rental? rental = await dbContext.Rentals
                 .Include(rental => rental.Car)
@@ -60,38 +65,20 @@ namespace CarRentalConsole.Services
 
             if (rental == null)
             {
-                return 0;
+                return ERentalReturnResult.RentalNotFound;
+            }
+
+            if (rental.IsReturned)
+            {
+                return ERentalReturnResult.AlreadyReturned;
             }
 
             rental.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
             rental.Car!.MakeAvailable();
 
-            return await dbContext.SaveChangesAsync();
-        }
+            await dbContext.SaveChangesAsync();
 
-        public async Task<string> GetRentalDetails(int rentalId)
-        {
-            var details = await dbContext.Rentals
-                .Where(rental => rental.Id == rentalId)
-                .Select(rental => new
-                {
-
-                    CustomerEmail = rental.Customer!.Email,
-                    CarName = rental.Car!.Name,
-                    StartDate = rental.StartDate,
-                    EndDate = rental.EndDate,
-                    TotalCost = rental.TotalCost
-
-
-                })
-                .FirstOrDefaultAsync();
-
-            if (details is null)
-            {
-                return "Rental not found.";
-            }
-
-            return $"Customer: {details.CustomerEmail}, Car: {details.CarName}, rent from {details.StartDate} to {details.EndDate}. Total: {details.TotalCost:F2}";
+            return ERentalReturnResult.Success;
         }
     }
 }

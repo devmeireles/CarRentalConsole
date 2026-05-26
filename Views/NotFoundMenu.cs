@@ -4,7 +4,7 @@ namespace CarRentalConsole.Views
 {
     internal class NotFoundMenu : IView
     {
-        public async Task Display()
+        public void Display()
         {
             Console.WriteLine("Option Not Found - Please try again");
         }

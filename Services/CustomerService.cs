@@ -16,9 +16,11 @@ namespace CarRentalConsole.Services
 
         public async Task<Customer> CreateCustomer(string email)
         {
+            string parsedEmail = email.Trim().ToLowerInvariant();
+
             Customer customer = new Customer
             {
-                Email = email
+                Email = parsedEmail
             };
 
             await dbContext.Customers.AddAsync(customer);

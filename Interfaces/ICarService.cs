@@ -5,5 +5,6 @@ namespace CarRentalConsole.Interfaces
     internal interface ICarService
     {
         Task<List<Car>> GetAvailableCars();
+        Task<Car?> GetCarById(int carId);
     }
 }

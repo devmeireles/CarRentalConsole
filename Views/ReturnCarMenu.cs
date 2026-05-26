@@ -6,19 +6,22 @@ namespace CarRentalConsole.Views
 {
     internal class ReturnCarMenu : IView
     {
-        private readonly IRentalService rentalService;
+        private readonly List<Rental> openRentals;
 
-        public ReturnCarMenu(IRentalService rentalService)
+        public ReturnCarMenu(List<Rental> openRentals)
         {
-            this.rentalService = rentalService;
+            this.openRentals = openRentals;
         }
 
-        private async Task<string> Build()
+        private string GetRentalDetails(Rental rental)
+        {
+            return $"Customer: {rental.Customer!.Email}, Car: {rental.Car!.Name}, rent from {rental.StartDate} to {rental.EndDate}. Total: {rental.TotalCost}";
+        }
+
+        private string Build()
         {
             StringBuilder stringBuilder = new StringBuilder();
             string divider = new string('-', 40);
-
-            List<Rental> openRentals = await rentalService.GetOpenRentals();
 
             if (openRentals.Count == 0)
             {
@@ -30,7 +33,7 @@ namespace CarRentalConsole.Views
                 stringBuilder.AppendLine("Returning a Car, please select your desired option:");
                 for (int i = 0; i < openRentals.Count; i++)
                 {
-                    stringBuilder.AppendLine($"{openRentals[i].Id} - {await rentalService.GetRentalDetails(openRentals[i].Id)}");
+                    stringBuilder.AppendLine($"{openRentals[i].Id} - {this.GetRentalDetails(openRentals[i])}");
                 }
                 stringBuilder.AppendLine(divider);
                 return stringBuilder.ToString();
@@ -41,9 +44,9 @@ namespace CarRentalConsole.Views
             return stringBuilder.ToString();
         }
 
-        public async Task Display()
+        public void Display()
         {
-            string menu = await Build();
+            string menu = Build();
             Console.WriteLine(menu);
         }
     }

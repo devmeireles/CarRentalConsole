@@ -4,14 +4,14 @@ using CarRentalConsole.Models;
 
 namespace CarRentalConsole.Controllers
 {
-    internal class CarController
+    internal class RentalController
     {
         private readonly ICarService carService;
         private readonly IRentalService rentalService;
         private readonly ICustomerService customerService;
         private readonly ConsoleInputReader inputReader;
 
-        public CarController(ICarService carService, IRentalService rentalService, ICustomerService customerService, ConsoleInputReader inputReader)
+        public RentalController(ICarService carService, IRentalService rentalService, ICustomerService customerService, ConsoleInputReader inputReader)
         {
             this.carService = carService;
             this.inputReader = inputReader;
@@ -26,17 +26,19 @@ namespace CarRentalConsole.Controllers
                 return EMenuScreen.RentCar;
             }
 
-            List<Car> availableCars = await carService.GetAvailableCars();
+            Car? selectedCar = await carService.GetCarById(selectedOption);
 
-            int carIndex = selectedOption - 1;
-
-            if (carIndex < 0 || carIndex >= availableCars.Count)
+            if (selectedCar is null)
             {
-                Console.WriteLine("Invalid car option.");
+                Console.WriteLine("Invalid car selection. Please try again.");
                 return EMenuScreen.RentCar;
             }
 
-            Car selectedCar = availableCars[carIndex];
+            if (!selectedCar.IsAvailable)
+            {
+                Console.WriteLine("Sorry, that car is no longer available.");
+                return EMenuScreen.RentCar;
+            }
 
             DateOnly startDate = inputReader.ReadDate("Start date: ");
             DateOnly endDate = inputReader.ReadDate("End date: ");
@@ -61,7 +63,7 @@ namespace CarRentalConsole.Controllers
             }
 
             int rentalDays = endDate.DayNumber - startDate.DayNumber;
-            double totalCost = rentalDays * (double)selectedCar.DailyRate;
+            decimal totalCost = rentalDays * selectedCar.DailyRate;
 
             Rental newRent = new Rental
             {
@@ -103,29 +105,25 @@ namespace CarRentalConsole.Controllers
                 return EMenuScreen.ReturnCar;
             }
 
-            Rental? rental = await rentalService.GetRentalById(rentalId);
-            if (rental == null)
-            {
-                Console.WriteLine("No rental found with that ID.");
-                return EMenuScreen.ReturnCar;
-            }
+            ERentalReturnResult result = await rentalService.ConcludeRental(rentalId);
 
-            if (rental.IsReturned)
+            switch (result)
             {
-                Console.WriteLine("This car has already been returned.");
-                return EMenuScreen.ReturnCar;
-            }
+                case ERentalReturnResult.Success:
+                    Console.WriteLine("Car returned successfully.");
+                    return EMenuScreen.Main;
 
-            int success = await rentalService.ConcludeRental(rentalId);
-            if (success < 1)
-            {
-                Console.WriteLine("Failed to return car. Please try again.");
-                return EMenuScreen.ReturnCar;
-            }
-            else
-            {
-                Console.WriteLine("Car returned successfully.");
-                return EMenuScreen.Main;
+                case ERentalReturnResult.RentalNotFound:
+                    Console.WriteLine("No rental found with that ID.");
+                    return EMenuScreen.ReturnCar;
+
+                case ERentalReturnResult.AlreadyReturned:
+                    Console.WriteLine("This car has already been returned.");
+                    return EMenuScreen.ReturnCar;
+
+                default:
+                    Console.WriteLine("Failed to return car. Please try again.");
+                    return EMenuScreen.ReturnCar;
             }
         }
     }

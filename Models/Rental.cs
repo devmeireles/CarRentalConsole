@@ -22,7 +22,7 @@ namespace CarRentalConsole.Models
         public DateOnly? ReturnDate { get; set; }
 
         [Required]
-        public double TotalCost { get; set; }
+        public decimal TotalCost { get; set; }
 
         public bool IsReturned => ReturnDate != null;
     }

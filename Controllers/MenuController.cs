@@ -3,9 +3,9 @@ namespace CarRentalConsole.Controllers
 {
     internal class MenuController
     {
-        private readonly CarController carRentalController;
+        private readonly RentalController carRentalController;
 
-        public MenuController(CarController carRentalController)
+        public MenuController(RentalController carRentalController)
         {
             this.carRentalController = carRentalController;
         }

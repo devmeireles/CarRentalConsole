@@ -6,9 +6,8 @@ namespace CarRentalConsole.Interfaces
     {
         Task<int> CreateRental(Rental rental);
         Task<Rental?> GetRentalById(int rentalId);
-        Task<string> GetRentalDetails(int rentalId);
         Task<List<Rental>> GetOpenRentals();
-        Task<int> ConcludeRental(int carId);
+        Task<ERentalReturnResult> ConcludeRental(int rentalId);
 
     }
 }
